@@ -20,7 +20,7 @@ public class UserService implements UserDetailsService {
         if(userRepositories.existsByEmail(user.getEmail())){
             return false;
         }
-
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepositories.save(user);
 
         return true;

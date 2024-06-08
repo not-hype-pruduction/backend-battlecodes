@@ -14,13 +14,15 @@ public class UserDetailsImpl implements UserDetails {
     private String name;
     private String email;
     private String password;
+    private Long id;
 
 
     public static UserDetailsImpl build(UserModel user) {
         return new UserDetailsImpl(
                 user.getName(),
                 user.getEmail(),
-                user.getPassword());
+                user.getPassword(),
+                user.getId());
     }
 
     @Override
