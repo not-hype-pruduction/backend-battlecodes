@@ -11,6 +11,11 @@ import com.battlecodes.backend.models.responses.JwtResponse;
 import com.battlecodes.backend.models.responses.TokenRefreshResponse;
 import com.battlecodes.backend.services.RefreshTokenService;
 import com.battlecodes.backend.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -37,6 +42,15 @@ public class UserController {
     private final JwtUtils jwtUtils;
     private final RefreshTokenService refreshTokenService;
 
+    @Operation(summary = "Register a new user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User registered successfully",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = UserModel.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid input",
+                    content = @Content),
+            @ApiResponse(responseCode = "409", description = "User already exists",
+                    content = @Content)
+    })
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserModel user, BindingResult result) {
 
@@ -51,12 +65,26 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(result);
     }
 
+    @Operation(summary = "Get current user information")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved user information",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)) }),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content)
+    })
     @GetMapping("/my")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getMyUser(Principal principal) {
         return ResponseEntity.ok().body(principal.getName());
     }
 
+    @Operation(summary = "Authenticate user and return JWT")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Authentication successful",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = JwtResponse.class)) }),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content)
+    })
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -78,6 +106,13 @@ public class UserController {
                 userDetails.getUsername(), userDetails.getEmail(), roles));
     }
 
+    @Operation(summary = "Refresh JWT using refresh token")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Token refreshed successfully",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = TokenRefreshResponse.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid refresh token",
+                    content = @Content)
+    })
     @PostMapping("/refreshtoken")
     public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest request) {
         String requestRefreshToken = request.getRefreshToken();
@@ -92,5 +127,4 @@ public class UserController {
                 .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
                         "Refresh token is not in database!"));
     }
-
 }

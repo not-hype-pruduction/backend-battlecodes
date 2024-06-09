@@ -40,7 +40,6 @@ import java.util.List;
 public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthEntryPointJwt unauthorizedHandler;
-    private final AuthTokenFilter authTokenFilter;
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
@@ -66,6 +65,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/user/register").permitAll()
                         .requestMatchers("/api/user/signin").permitAll()
                         .requestMatchers("/api/ping").permitAll()
+                        .requestMatchers("/api-doc/**").permitAll()
+                        .requestMatchers("/api.html").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()
                         .anyRequest().fullyAuthenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
