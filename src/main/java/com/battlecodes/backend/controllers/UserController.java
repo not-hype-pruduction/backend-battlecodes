@@ -7,6 +7,7 @@ import com.battlecodes.backend.exception.TokenRefreshException;
 import com.battlecodes.backend.models.RefreshToken;
 import com.battlecodes.backend.models.UserModel;
 import com.battlecodes.backend.models.requests.LoginRequest;
+import com.battlecodes.backend.models.requests.RegisterUserRequest;
 import com.battlecodes.backend.models.responses.JwtResponse;
 import com.battlecodes.backend.models.responses.TokenRefreshResponse;
 import com.battlecodes.backend.services.RefreshTokenService;
@@ -52,11 +53,17 @@ public class UserController {
                     content = @Content)
     })
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UserModel user, BindingResult result) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterUserRequest registerUserRequest, BindingResult result) {
 
         if(result.hasErrors()) {
             return ResponseEntity.badRequest().body(result);
         }
+
+        UserModel user = new UserModel();
+        user.setName(registerUserRequest.getName());
+        user.setEmail(registerUserRequest.getEmail());
+        user.setPassword(registerUserRequest.getPassword());
+        user.setRoles(registerUserRequest.getRoles());
 
         if(userService.createUser(user)){
             return ResponseEntity.ok().body(user);
@@ -68,12 +75,12 @@ public class UserController {
     @Operation(summary = "Get current user information")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved user information",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)) }),
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = UserModel.class)) }),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = @Content)
     })
     @GetMapping("/my")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getMyUser(Principal principal) {
         return ResponseEntity.ok().body(userService.getUserByEmail(principal.getName()));
     }

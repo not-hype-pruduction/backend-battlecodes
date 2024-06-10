@@ -32,6 +32,10 @@ public class UserModel {
     @JsonIgnore
     private String password;
 
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private GroupModel group;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"))
