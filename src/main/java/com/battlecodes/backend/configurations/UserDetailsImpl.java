@@ -1,5 +1,6 @@
 package com.battlecodes.backend.configurations;
 
+import com.battlecodes.backend.models.ERole;
 import com.battlecodes.backend.models.UserModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,6 +9,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Data
 @AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
@@ -15,6 +19,7 @@ public class UserDetailsImpl implements UserDetails {
     private String email;
     private String password;
     private Long id;
+    private Set<ERole> roles;
 
 
     public static UserDetailsImpl build(UserModel user) {
@@ -22,12 +27,15 @@ public class UserDetailsImpl implements UserDetails {
                 user.getName(),
                 user.getEmail(),
                 user.getPassword(),
-                user.getId());
+                user.getId(),
+                user.getRoles());
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return roles.stream()
+                .map(role -> (GrantedAuthority) role)
+                .collect(Collectors.toSet());
     }
 
     @Override

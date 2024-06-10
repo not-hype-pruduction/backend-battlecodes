@@ -75,7 +75,7 @@ public class UserController {
     @GetMapping("/my")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getMyUser(Principal principal) {
-        return ResponseEntity.ok().body(principal.getName());
+        return ResponseEntity.ok().body(userService.getUserByEmail(principal.getName()));
     }
 
     @Operation(summary = "Authenticate user and return JWT")
