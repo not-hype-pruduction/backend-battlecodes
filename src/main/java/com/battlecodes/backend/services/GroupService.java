@@ -108,4 +108,27 @@ public class GroupService {
         groupsRepositories.delete(group);
         return true;
     }
+
+    public boolean editGroup(Long id, String name, String game, String password) {
+        GroupModel group = groupsRepositories.findById(id).orElse(null);
+
+        if (group == null) {
+            return false;
+        }
+
+        if (name != null && !name.isEmpty()) {
+            group.setName(name);
+        }
+
+        if (game != null && !game.isEmpty()) {
+            group.setGame(game);
+        }
+
+        if (password != null && !password.isEmpty()) {
+            group.setPassword(password);
+        }
+
+        groupsRepositories.save(group);
+        return true;
+    }
 }

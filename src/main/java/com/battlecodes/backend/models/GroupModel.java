@@ -32,6 +32,10 @@ public class GroupModel {
         this.createsId = userId;
     }
 
+    public GroupModel() {
+
+    }
+
     public void addUser(UserModel user){
         users.add(user);
         user.setGroup(this);
