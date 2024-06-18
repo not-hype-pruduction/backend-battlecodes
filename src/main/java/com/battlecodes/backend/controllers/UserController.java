@@ -134,4 +134,47 @@ public class UserController {
                 .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
                         "Refresh token is not in database!"));
     }
+
+    @Operation(summary = "Get all users")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved all users",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = UserModel.class)) })
+    })
+    @GetMapping("")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<List<UserModel>> getAllUsers() {
+        List<UserModel> users = userService.getAllUser();
+        return ResponseEntity.ok(users);
+    }
+
+    @Operation(summary = "Delete a user by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> deleteUserById(@PathVariable Long id) {
+        if (userService.deleteUserById(id)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Operation(summary = "Edit a user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User edited successfully"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> editUser(@PathVariable Long id, @RequestParam(required = false) String name,
+                                      @RequestParam(required = false) String email, @RequestParam(required = false) String password) {
+        if (userService.editUser(id, name, email, password)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

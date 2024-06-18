@@ -3,6 +3,7 @@ package com.battlecodes.backend.controllers;
 import com.battlecodes.backend.models.GroupModel;
 import com.battlecodes.backend.models.requests.AddUserToGroupRequest;
 import com.battlecodes.backend.models.requests.CreateGroupRequest;
+import com.battlecodes.backend.models.requests.EditGroupRequest;
 import com.battlecodes.backend.models.requests.RemoveUserFromGroupRequest;
 import com.battlecodes.backend.services.GroupService;
 import com.battlecodes.backend.services.UserService;
@@ -116,5 +117,39 @@ public class GroupController {
         }
 
         return ResponseEntity.badRequest().build();
+    }
+
+    @Operation(summary = "Изменить данные группы", description = "Изменяет данные указанной группы")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Данные группы изменены успешно",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = GroupModel.class))),
+            @ApiResponse(responseCode = "400", description = "Ошибка изменения данных группы"),
+            @ApiResponse(responseCode = "403", description = "Доступ запрещен")
+    })
+    @PutMapping("/edit/{groupId}")
+    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> editGroup(
+            @PathVariable Long groupId,
+            @Valid @RequestBody EditGroupRequest editGroupRequest) {
+
+        if (groupService.editGroup(groupId, editGroupRequest.getName(), editGroupRequest.getGame(), editGroupRequest.getPassword())) {
+            return ResponseEntity.ok(groupService.getGroupById(groupId));
+        }
+
+        return ResponseEntity.badRequest().build();
+    }
+
+    @Operation(summary = "Получить все группы", description = "Получает все группы в системе")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Список групп",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = GroupModel.class))),
+            @ApiResponse(responseCode = "403", description = "Доступ запрещен")
+    })
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<List<GroupModel>> getAllGroups() {
+        return ResponseEntity.ok(groupService.getAllGroups());
     }
 }

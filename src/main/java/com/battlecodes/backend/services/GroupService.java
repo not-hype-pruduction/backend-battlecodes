@@ -86,6 +86,14 @@ public class GroupService {
         return groupsRepositories.findByName(name).orElse(null);
     }
 
+    public GroupModel getGroupById(Long id){
+        return groupsRepositories.findById(id).orElse(null);
+    }
+
+    public List<GroupModel> getAllGroups(){
+        return groupsRepositories.findAll();
+    }
+
     public boolean removeGroup(String name, Long userId) {
         log.info("Removing group {}", name);
         Optional<GroupModel> groupOptional = groupsRepositories.findByName(name);
