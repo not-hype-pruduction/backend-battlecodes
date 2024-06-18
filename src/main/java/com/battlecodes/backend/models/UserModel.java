@@ -33,8 +33,12 @@ public class UserModel {
     private String password;
 
     @ManyToOne
-    @JoinColumn(name = "group_id")
+    @JoinColumn(name = "group")
     private GroupModel group;
+
+    @OneToOne
+    @JoinColumn(name = "algorithm")
+    private UserAlgorithm algorithm;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role",
