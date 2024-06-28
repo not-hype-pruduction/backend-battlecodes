@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: "postgres:11-alpine"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+
+  backend:
+    build: .
+    ports:
+      - "8081:8081"
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_JDBC_URL: jdbc:postgresql://postgres:5432/postgres
+    depends_on:
+      - postgres
