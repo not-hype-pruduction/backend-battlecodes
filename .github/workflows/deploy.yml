@@ -34,7 +34,7 @@ jobs:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       run: |
         ssh -o StrictHostKeyChecking=no user@your-server-ip << 'EOF'
-          docker-compose -f /path/to/your/docker-compose.yml down
-          docker-compose -f /path/to/your/docker-compose.yml pull
-          docker-compose -f /path/to/your/docker-compose.yml up -d
+          docker-compose -f Docker-compose.yaml down
+          docker-compose -f Docker-compose.yaml pull
+          docker-compose -f Docker-compose.yaml up -d
         EOF
