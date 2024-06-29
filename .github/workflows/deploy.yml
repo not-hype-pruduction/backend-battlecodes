@@ -21,10 +21,12 @@ jobs:
       with:
         context: .
         push: true
-        tags: your-dockerhub-username/your-app-name:latest
+        tags: battlecodes/backend-battlecodes:latest
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_TOKEN }}
-
+      env:
+        BUILDKIT_PROGRESS: plain
+        DOCKER_BUILDKIT: 1
     - name: Deploy to server
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
