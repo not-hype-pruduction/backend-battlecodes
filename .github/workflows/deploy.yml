@@ -27,7 +27,7 @@ jobs:
           mvn -B package --file pom.xml
 
       - name: login to Docker Hub
-        run: echo "${{ secrets.deploy.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.deploy.DOCKER_USERNAME }}" --password-stdin
+        run: echo "dckr_pat_6WT_FrLGkS3D6gOM4sVReRzaPgw" | docker login -u "battlecodes" --password-stdin
 
       - name: build the docker image
         uses: docker/build-push-action@v4
