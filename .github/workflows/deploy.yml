@@ -33,7 +33,7 @@ jobs:
           context: .
           dockerfile: Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/backend-battlecodes:latest
+          tags: battlecodes/backend-battlecodes:latest
 
       - name: SSH to server and deploy
         uses: appleboy/ssh-action@master
