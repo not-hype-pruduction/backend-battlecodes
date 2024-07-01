@@ -40,9 +40,9 @@ jobs:
       - name: SSH to server and deploy
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.deploy.SERVER_HOST }}
-          username: ${{ secrets.deploy.SERVER_USERNAME }}
-          key: ${{ secrets.deploy.SSH_PRIVATE_KEY }}
+          host: 213.171.4.37
+          username: root
+          key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCojy18r/mELeUTrKrSTzxj0f2q91VeB0j+O5lbM0KkWjzX5zZql3GMXXZmztGP78jhdwYktTQ8OjLZ5M9OzAxrkCzEAO/oGncs8yFGxZjQ0RzDRXqekKDz6I5QPypZgfvIv9veVyJ2J9e54JSDSDGOjavrW8ytmRjwu5K8EctxiInjO6lSOjrawRjUAc7kB2qmybnJRfw4NaGtBNdZ4ibRYTs/8mg9e9adzqMSywzYAOfqMnfeksYbp/PMamFC0//qXotlcoJMQ/BfYXrOQXJYc00QuJeQDx7E2/WN/qDs/qLEJs26xx60m1zXOsyaDLEBOtDxSpes6Ol06ZxK9uj1XgtWI8aWr/oqCJOHBBW1npNn1JaHxfUcHAuHsJBegoQ90rSaUErADDidcvuGDsnmaTP+b3RJmeN9zA9IdddI9s5+lmpb2s5xec2ohBFlva8RhqmgcSTCC+axPpJK/U+G+NmLgjWc9MsN0tdRt+0gBU1uJWvp/Lf3JhLYucsxwVoddZennn3fC9Kem6humHn7e1EE6NqIs2TUTl355nQknSbm6ngKPrnFDqDSYoTENa210JOM4PE7J3kpWxv7ATn2uVy5AbudwwvT2dyjsiHWZWE+A6xgqOn4XVTCbM+PV47PjZxj26cAD84YlmkK+zdK0j4w0C6WeE5qzv+0EqCcrw== battle-codes
           script: |
             docker-compose down
             docker-compose pull
