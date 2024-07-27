@@ -39,7 +39,7 @@ jobs:
 
       - name: Copy files to server
         run: |
-          scp -r -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ./* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/root/project
+          sshpass -p "${{ secrets.PASSWORD }}" scp -r -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ./* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/root/project
 
       - name: SSH to server and deploy
         uses: appleboy/ssh-action@v1.0.3
