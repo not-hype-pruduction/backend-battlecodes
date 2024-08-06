@@ -8,6 +8,7 @@ import com.battlecodes.backend.models.RefreshToken;
 import com.battlecodes.backend.models.UserModel;
 import com.battlecodes.backend.models.requests.LoginRequest;
 import com.battlecodes.backend.models.requests.RegisterUserRequest;
+import com.battlecodes.backend.models.responses.ErrorResponse;
 import com.battlecodes.backend.models.responses.JwtResponse;
 import com.battlecodes.backend.models.responses.TokenRefreshResponse;
 import com.battlecodes.backend.services.RefreshTokenService;
@@ -69,7 +70,7 @@ public class UserController {
             return ResponseEntity.ok().body(user);
         }
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(result);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(List.of("User already exists")));
     }
 
     @Operation(summary = "Get current user information")
@@ -82,7 +83,11 @@ public class UserController {
     @GetMapping("/my")
     @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getMyUser(Principal principal) {
-        return ResponseEntity.ok().body(userService.getUserByEmail(principal.getName()));
+        UserModel user = userService.getUserByEmail(principal.getName());
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(List.of("User not found")));
+        }
+        return ResponseEntity.ok().body(user);
     }
 
     @Operation(summary = "Authenticate user and return JWT")

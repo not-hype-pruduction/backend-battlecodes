@@ -33,7 +33,7 @@ public class UserModel {
     private String password;
 
     @ManyToOne
-    @JoinColumn(name = "group")
+    @JoinColumn(name = "user_group")
     private GroupModel group;
 
     @OneToOne

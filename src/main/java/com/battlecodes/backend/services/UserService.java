@@ -2,7 +2,9 @@ package com.battlecodes.backend.services;
 
 import com.battlecodes.backend.configurations.UserDetailsImpl;
 import com.battlecodes.backend.models.UserModel;
+import com.battlecodes.backend.repositories.RefreshTokenRepository;
 import com.battlecodes.backend.repositories.UserRepositories;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,6 +19,7 @@ import java.util.List;
 public class UserService implements UserDetailsService {
     private final UserRepositories userRepositories;
     private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public Boolean createUser(UserModel user) {
         if(userRepositories.existsByEmail(user.getEmail())){
@@ -40,15 +43,14 @@ public class UserService implements UserDetailsService {
         return userRepositories.findAll();
     }
 
+    @Transactional
     public boolean deleteUserById(Long id) {
-        UserModel user = userRepositories.findById(id).orElse(null);
-
-        if (user == null) {
-            return false;
+        if (userRepositories.existsById(id)) {
+            refreshTokenRepository.deleteByUserId(id); // Delete related refresh tokens
+            userRepositories.deleteById(id);
+            return true;
         }
-
-        userRepositories.delete(user);
-        return true;
+        return false;
     }
 
     public boolean editUser(Long id, String name, String email, String password) {
