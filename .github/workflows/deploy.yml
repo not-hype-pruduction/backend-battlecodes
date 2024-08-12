@@ -34,6 +34,13 @@ jobs:
           push: true
           tags: battlecodes/backend-battlecodes:latest
 
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+
       - name: Copy files to server
         run: |
           scp -r -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ./* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/${{ secrets.USERNAME }}/proj/
