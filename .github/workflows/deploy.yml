@@ -39,22 +39,23 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
-
+          ssh-keyscan -p 1526 -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+      
       - name: Copy files to server
         run: |
-          scp -r -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ./* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/backend/proj/
-
+          scp -P 1526 -r -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ./* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/backend/proj/
+      
       - name: SSH to server and deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
+          port: 1526
           script: |
             cd proj
             docker compose down
             docker compose pull
             docker compose up -d
+
 
