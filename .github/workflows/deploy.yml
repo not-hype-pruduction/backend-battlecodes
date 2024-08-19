@@ -43,9 +43,9 @@ jobs:
           port: 1526
           script: |
             cd /home/backend/proj/
-            docker compose down
-            docker compose pull battlecodes/backend-battlecodes:latest
-            docker compose up -d
-
+            docker pull battlecodes/backend-battlecodes:latest
+            docker stop backend-container || true
+            docker rm backend-container || true
+            docker run --env-file /home/backend/proj/.env -d --name backend-container --network host battlecodes/backend-battlecodes:latest
 
 
