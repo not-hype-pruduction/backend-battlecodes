@@ -4,6 +4,7 @@ import com.battlecodes.backend.models.UserAlgorithm;
 import com.battlecodes.backend.models.UserModel;
 import com.battlecodes.backend.models.requests.AlgorithmIdsRequest;
 import com.battlecodes.backend.models.requests.UploadAlgorithmRequest;
+import com.battlecodes.backend.services.GroupService;
 import com.battlecodes.backend.services.UserAlgorithmService;
 import com.battlecodes.backend.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +29,7 @@ import java.util.List;
 @Tag(name = "UserAlgorithmController", description = "Контроллер для управления алгоритмами пользователей")
 public class UserAlgorithmController {
     private final UserAlgorithmService userAlgorithmService;
+    private final GroupService groupService;
     private final UserService userService;
 
     @Autowired
@@ -63,11 +65,12 @@ public class UserAlgorithmController {
     })
     @GetMapping("/group/{groupId}/algorithms")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
-    public ResponseEntity<?> getAlgorithmsByGroup(@PathVariable Long groupId, Principal principal) {
+    public ResponseEntity<?> startAlgorithmsGameByGroup(@PathVariable Long groupId) {
         List<Long> algorithmIds = userAlgorithmService.getAlgorithmsByGroupId(groupId);
 
         AlgorithmIdsRequest algorithmIdsRequest = new AlgorithmIdsRequest();
         algorithmIdsRequest.setAlgorithmIds(algorithmIds);
+        algorithmIdsRequest.setGame(groupService.getGameGroup(groupId));
 
         ResponseEntity<?> response = restTemplate.postForEntity("http://other-microservice/api/process", algorithmIdsRequest, String.class);
 

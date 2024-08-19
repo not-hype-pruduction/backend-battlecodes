@@ -7,4 +7,5 @@ import java.util.List;
 @Data
 public class AlgorithmIdsRequest {
     private List<Long> algorithmIds;
+    private String game;
 }

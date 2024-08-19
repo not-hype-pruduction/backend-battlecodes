@@ -139,4 +139,8 @@ public class GroupService {
         groupsRepositories.save(group);
         return true;
     }
+
+    public String getGameGroup(Long id){
+        return groupsRepositories.findById(id).orElse(null).getGame();
+    }
 }
