@@ -34,17 +34,6 @@ jobs:
           push: true
           tags: battlecodes/backend-battlecodes:latest
 
-      - name: Set up SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -p 1526 -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
-      
-      - name: Copy files to server
-        run: |
-          scp -P 1526 -r -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ./* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/home/backend/proj/
-      
       - name: SSH to server and deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -53,9 +42,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 1526
           script: |
-            cd proj
+            cd /home/backend/proj/
             docker compose down
-            docker compose pull
+            docker compose pull battlecodes/backend-battlecodes:latest
             docker compose up -d
+
 
 
